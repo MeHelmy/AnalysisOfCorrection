@@ -296,10 +296,18 @@ compare_global_correction_plot <- function(compare_data_frame, title, x_axes, y_
             labs(title = title, x = x_axes, y = y_axes , colour = "comnpare") +  my_scale_manual_color(name = "Software and original reads", color_manual = myColors_original) )
 }
 
+# function to extrct complement rows from two dataframes
+
+complement_rows <- function(whole_dataframe, small_dataframe, intersect_column_first, intersect_column_second){
+  return(subset(whole_dataframe, (whole_dataframe$intersect_column_first %in% small_dataframe$intersect_column_second)))
+  
+}
+
 # color function
 
-myColors <- brewer.pal(5,"Set1")
-names(myColors) <- c("LoRDEC", "proovread", "PBcR", "lsc", "Original")
+
+myColors <- c(brewer.pal(4,"Set1"), "#000000")
+names(myColors) <- c("LoRDEC",  "lsc", "proovread", "PBcR", "Original")
 
 myColors_original <- brewer.pal(5,"Set1")
 names(myColors_original) <- c("LoRDEC", "proovread", "PBcR", "lsc", "Original reads")
