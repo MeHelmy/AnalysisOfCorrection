@@ -14,6 +14,12 @@ library(gridExtra)  # http://rstudio-pubs-static.s3.amazonaws.com/2852_379274d7c
 
 data_location_correct <- "/data/test_data_from_server_maize/assessment_2016-08-29/"
 data_location_original <- "/data/test_data_from_server_maize/assessment_2016-08-29/original_align/"
+
+# reading NNNNN reads 
+
+human_NN_reads <- read.delim("/data/test_data_from_server_maize/assessment_2016-08-29/complementory_data/human21_pacbio_original_nucleotide_N_freq.bed")
+rice_NN_reads <- read.delim("/data/test_data_from_server_maize/assessment_2016-08-29/complementory_data/rice_pacbio_original_nucleotide_N_freq.bed")
+
 ecoli_number_of_reads <- 30364
 ecoli_number_of_nucleotide <- 91173200
 trypanosoma_number_of_reads <- 35025
