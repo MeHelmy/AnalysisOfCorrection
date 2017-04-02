@@ -305,10 +305,33 @@ get_global_alignment_comarison <- function(golbal_data_frame, original_data_fram
   return(rbind(golbal_correction, global_before_correction))
 }
 
-# draw plot fpr comparion the correction rate between the original uncorrected reads and corrected
+# draw plot for comparion the correction rate between the original uncorrected reads and corrected
 compare_global_correction_plot <- function(compare_data_frame, title, x_axes, y_axes, bins = 30){
   return( ggplot(data = compare_data_frame, aes(subsimilarity, colour = software )) + geom_freqpoly(binwidth = bins) + theme_bw() + scale_x_continuous(breaks=seq(0,105,by=20), limits=c(0,105)) +
             labs(title = title, x = x_axes, y = y_axes , colour = "comnpare") +  my_scale_manual_color(name = "Software and original reads", color_manual = myColors_original) )
+}
+
+# function to draw the count fo the clipped reads
+
+plot_clipped_length_distribution <- function(clipped_data_frame,  x_axes, legen_name, bins = 30, organism, manual_color, aggregate_data = TRUE , aggregate_value = 5000, clipped_filed){
+  if(organism == "ecoli"){
+    plot_title <- "E.coli clipped data"
+  }else if(organism == "trypanosoma"){
+    plot_title <- "Trypanosoma clipped data"
+  }else if(organism == "yeast"){
+    plot_title <- "Yeast clipped data"
+  }else if(organism == "rice"){
+    plot_title <- "Rice clipped data"
+  }else{
+    plot_title <- "Human clipped data"
+  }
+  if(aggregate_data){
+    clipped_data_frame[clipped_data_frame[[clipped_filed]] > 5000, clipped_filed] <- aggregate_value
+  }
+  
+ return( ggplot(clipped_data_frame, aes(lost_data, color=software, fill=software)) +
+    geom_freqpoly(binwidth = bins) + labs(title = plot_title, x = x_axes) +
+    my_scale_manual_color(name = legen_name, color_manual = manual_color) + my_scale_manual_fill(name = legen_name, color_manual = manual_color)+ theme_bw() )
 }
 
 # function to extrct complement rows from two dataframes
@@ -552,6 +575,8 @@ draw_ecoli_clipped_data <- ggplot(ecoli_clipped_data, aes(lost_data)) +
  geom_density(aes(color=software, fill=software), alpha=0.1) + labs(title = "E.coli clipped data", x = "Clipped data") +
   my_scale_manual_color(name = "Software", color_manual = myColors) + my_scale_manual_fill(name = "Software", color_manual = myColors)
 
+draw_ecoli_clipped_data <- plot_clipped_length_distribution(clipped_data_frame = ecoli_clipped_data, x_axes = "Clipped data", legen_name = "Software", bins = 150, organism = "ecoli", manual_color = myColors, aggregate_data = TRUE, aggregate_value = 5000, clipped_filed = "lost_data")
+
 # trypanosoma
 draw_trypanosoma_clipped_data <- ggplot(trypanosoma_clipped_data, aes(lost_data)) +
  geom_density(aes(color=software, fill=software), alpha=0.1) + labs(title = "Trypanosoma clipped data", x = "Clipped data") +
@@ -672,7 +697,8 @@ read_nucelotide_comapre <- rbind(crp, cnp)
 # http://stackoverflow.com/questions/40102676/combine-two-data-frames-in-one-graph
 
 ggplot(read_nucelotide_comapre)+geom_bar(aes(x=Organism,y=Efficiency,group=interaction(name,Tool),fill=Tool,alpha=name),position="dodge",colour="grey",stat="identity")+ scale_alpha_discrete(range = c(0.5, 1), name = "Nuceltoides/Reads") +
-  labs(title = "Comparing tools performance in different organisms", y = "Percentage")
+  labs(title = "Comparing tools performance in different organisms", y = "Percentage") + my_scale_manual_fill(color_manual = myColors)
+
 # ggplot(d)+geom_bar(aes(x=Organism,y=Efficiency,group=interaction(name,Tool),fill=Tool,alpha=name),position="dodge",colour="grey",stat="identity")+ scale_alpha_discrete(limits = c(0.2, 1))
 # ggplot(d, aes(x=Organism, y=Efficiency , group=Tool, fill=Tool,  colour=name)) +
 #   geom_bar(stat="identity", position="dodge") + scale_colour_brewer(palette = "Set1")
@@ -701,7 +727,7 @@ ggplot(read_nucelotide_comapre, aes(x = Organism, y = Efficiency, fill = name))+
 corrected_full_reads_percentage_plot <- ggplot(percentage_of_full_corrected_reads,aes(Organism,Efficiency, fill=Tool)) + 
   geom_bar(stat="identity", position=position_dodge()) +   geom_text(aes(label = round(Efficiency,1)) , position=position_dodge(width=0.9), vjust=-0.25, size = 3) + 
   labs(title = "Percentage of full corrected reads ", x = "Organism") + my_scale_manual_fill(color_manual = myColors)
-  
+my_scale_manual_fill(color_manual = myColors)
   
 percentage_of_correction <- grid.arrange(  corrected_reads_percentage_plot,
                                            corrected_nucleotides_percentage_plot, ncol = 2, top = "Correction percentage")
