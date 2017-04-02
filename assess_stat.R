@@ -237,6 +237,8 @@ get_full_read_percentage <- function(ecoli_lordec, ecoli_proovread, ecoli_lsc,
                                      ecoli_number_of_original_reads, yeast_number_of_original_reads, trypanosoma_number_of_original_reads,
                                      rice_number_of_original_reads, human_number_of_original_reads){
   
+  # remeber to remove the reads that contains N from trypanosoma, rics and human
+  
 organism_correct_percentage <- data.frame(Tool=c('LoRDEC', 'proovread', 'lsc'),
                                             E.coli=c((ecoli_lordec/ecoli_number_of_original_reads)*100, (ecoli_proovread/ecoli_number_of_original_reads)*100, (ecoli_lsc/ecoli_number_of_original_reads)*100),
                                             Trypanosma=c((trypanosoma_lordec/trypanosoma_number_of_original_reads)*100, (trypanosoma_proovread/trypanosoma_number_of_original_reads)*100, (trypanosoma_lsc/trypanosoma_number_of_original_reads)*100),
@@ -307,8 +309,12 @@ compare_global_correction_plot <- function(compare_data_frame, title, x_axes, y_
 
 # function to extrct complement rows from two dataframes
 
-complement_rows <- function(whole_dataframe, small_dataframe, intersect_column_first, intersect_column_second){
-  return(subset(whole_dataframe, (whole_dataframe$intersect_column_first %in% small_dataframe$intersect_column_second)))
+extract_rows <- function(whole_dataframe, small_dataframe, intersect_column_first, intersect_column_second, complement=TRUE){
+  if(complement){
+    return(subset(whole_dataframe, !(whole_dataframe[[intersect_column_first]] %in% small_dataframe[[intersect_column_second]])))
+  }else{
+    return(subset(whole_dataframe, (whole_dataframe[[intersect_column_first]] %in% small_dataframe[[intersect_column_second]])))
+  }
   
 }
 
