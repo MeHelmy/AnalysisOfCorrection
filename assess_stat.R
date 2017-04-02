@@ -19,17 +19,20 @@ data_location_original <- "/data/test_data_from_server_maize/assessment_2016-08-
 
 human_NN_reads <- read.delim("/data/test_data_from_server_maize/assessment_2016-08-29/complementory_data/human21_pacbio_original_nucleotide_N_freq.bed")
 rice_NN_reads <- read.delim("/data/test_data_from_server_maize/assessment_2016-08-29/complementory_data/rice_pacbio_original_nucleotide_N_freq.bed")
+trypanosoma_NN_reads <- read.delim("/data/test_data_from_server_maize/assessment_2016-08-29/complementory_data/trypanosoma_pacbio_original_nucleotide_N_freq.bed")
+
+# number of reads from each organism
 
 ecoli_number_of_reads <- 30364
 ecoli_number_of_nucleotide <- 91173200
-trypanosoma_number_of_reads <- 35025
-trypanosoma_number_of_nucleotide <- 105236020
+trypanosoma_number_of_reads <- 35025 - nrow(trypanosoma_NN_reads)
+trypanosoma_number_of_nucleotide <- 105236020 - sum(trypanosoma_NN_reads$end)
 yeast_number_of_reads <- 10198
 yeast_number_of_nucleotide <- 30638660
-rice_number_of_reads <- 243707
-rice_number_of_nucleotide <- 728276380
-human_number_of_reads <- 311204
-human_number_of_nucleotide <- 934199660
+rice_number_of_reads <- 243707 - nrow(rice_NN_reads)
+rice_number_of_nucleotide <- 728276380 - sum(rice_NN_reads$end)
+human_number_of_reads <- 311204 - nrow(human_NN_reads)
+human_number_of_nucleotide <- 934199660 - sum(human_NN_reads$end)
 
 # number of reads after correction full length
 
