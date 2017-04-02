@@ -344,55 +344,76 @@ my_scale_manual_color <- function(name = "Software", color_manual, ...) {
 #******* local **********#
 lordec_ecoli_local <- read.delim(paste(data_location_correct, 'lordec_ecoli_local.txt', sep = ''))
 lordec_trypanosoma_local <-   read.delim(paste(data_location_correct, 'lordec_trypanosoma_local.txt', sep = ''))
+lordec_trypanosoma_local <- extract_rows(whole_dataframe = lordec_trypanosoma_local, small_dataframe = trypanosoma_NN_reads, intersect_column_first = "sequence", intersect_column_second = "name", complement = T)
 lordec_yeast_local <-   read.delim(paste(data_location_correct, 'lordec_yeast_local.txt', sep = ''))
 lordec_rice_local <- read.delim(paste(data_location_correct, 'lordec_rice_local.txt', sep = ''))
+lordec_rice_local <- extract_rows(whole_dataframe = lordec_rice_local, small_dataframe = rice_NN_reads, intersect_column_first = "sequence", intersect_column_second = "name", complement = T)
 lordec_human_local <-   read.delim(paste(data_location_correct, 'lordec_human_local.txt', sep = ''))
+lordec_human_local <- extract_rows(whole_dataframe = lordec_human_local, small_dataframe = human_NN_reads, intersect_column_first = "sequence", intersect_column_second = "name", complement = T)
 
 #******* global **********#
 lordec_ecoli_global <- read.delim(paste(data_location_correct, 'lordec_ecoli_global.txt', sep = ''))
 lordec_trypanosoma_global <-   read.delim(paste(data_location_correct, 'lordec_trypanosoma_global.txt', sep = ''))
+lordec_trypanosoma_global <- extract_rows(whole_dataframe = lordec_trypanosoma_global, small_dataframe = trypanosoma_NN_reads, intersect_column_first = "sequence", intersect_column_second = "name", complement = T)
 lordec_yeast_global <-   read.delim(paste(data_location_correct, 'lordec_yeast_global.txt', sep = ''))
 lordec_rice_global <- read.delim(paste(data_location_correct, 'lordec_rice_global.txt', sep = ''))
+lordec_rice_global <- extract_rows(whole_dataframe = lordec_rice_global, small_dataframe = rice_NN_reads, intersect_column_first = "sequence", intersect_column_second = "name", complement = T)
 lordec_human_global <-   read.delim(paste(data_location_correct, 'lordec_human_global.txt', sep = ''))
+lordec_human_global <- extract_rows(whole_dataframe = lordec_human_global, small_dataframe = human_NN_reads, intersect_column_first = "sequence", intersect_column_second = "name", complement = T)
 
 ####### proovread ########
 #******* local **********#
 proovread_ecoli_local <- read.delim(paste(data_location_correct, 'proovread_ecoli_local.txt', sep = ''))
 proovread_trypanosoma_local <-   read.delim(paste(data_location_correct, 'proovread_trypanosoma_local.txt', sep = ''))
+proovread_trypanosoma_local <- extract_rows(whole_dataframe = proovread_trypanosoma_local, small_dataframe = trypanosoma_NN_reads, intersect_column_first = "sequence", intersect_column_second = "name", complement = T)
 proovread_yeast_local <-   read.delim(paste(data_location_correct, 'proovread_yeast_local.txt', sep = ''))
 proovread_rice_local <- read.delim(paste(data_location_correct, 'proovread_rice_local.txt', sep = ''))
+proovread_rice_local <- extract_rows(whole_dataframe = proovread_rice_local, small_dataframe = rice_NN_reads, intersect_column_first = "sequence", intersect_column_second = "name", complement = T)
 proovread_human_local <-   read.delim(paste(data_location_correct, 'proovread_human_local.txt', sep = ''))
+proovread_human_local <- extract_rows(whole_dataframe = proovread_human_local, small_dataframe = human_NN_reads, intersect_column_first = "sequence", intersect_column_second = "name", complement = T)
 
 #******* global **********#
 proovread_ecoli_global <- read.delim(paste(data_location_correct, 'proovread_ecoli_global.txt', sep = ''))
 proovread_trypanosoma_global <-   read.delim(paste(data_location_correct, 'proovread_trypanosoma_global.txt', sep = ''))
+proovread_trypanosoma_global <- extract_rows(whole_dataframe = proovread_trypanosoma_global, small_dataframe = trypanosoma_NN_reads, intersect_column_first = "sequence", intersect_column_second = "name", complement = T)
 proovread_yeast_global <-   read.delim(paste(data_location_correct, 'proovread_yeast_global.txt', sep = ''))
 proovread_rice_global <- read.delim(paste(data_location_correct, 'proovread_rice_global.txt', sep = ''))
+proovread_rice_global <- extract_rows(whole_dataframe = proovread_rice_global, small_dataframe = rice_NN_reads, intersect_column_first = "sequence", intersect_column_second = "name", complement = T)
 proovread_human_global <-   read.delim(paste(data_location_correct, 'proovread_human_global.txt', sep = ''))
+proovread_human_global <- extract_rows(whole_dataframe = proovread_human_global, small_dataframe = human_NN_reads, intersect_column_first = "sequence", intersect_column_second = "name", complement = T)
 
 ####### PBcR #############
 #******* local **********#
 pbcr_ecoli_local <- read.delim(paste(data_location_correct, 'pbcr_ecoli_local.txt', sep = ''))
 pbcr_trypanosoma_local <-   read.delim(paste(data_location_correct, 'pbcr_trypanosoma_local.txt', sep = ''))
+pbcr_trypanosoma_local <- extract_rows(whole_dataframe = pbcr_trypanosoma_local, small_dataframe = trypanosoma_NN_reads, intersect_column_first = "sequence", intersect_column_second = "name", complement = T)
 pbcr_yeast_local <-   read.delim(paste(data_location_correct, 'pbcr_yeast_local.txt', sep = ''))
 pbcr_rice_local <- read.delim(paste(data_location_correct, 'pbcr_rice_local.txt', sep = ''))
+pbcr_rice_local <- extract_rows(whole_dataframe = pbcr_rice_local, small_dataframe = rice_NN_reads, intersect_column_first = "sequence", intersect_column_second = "name", complement = T)
 pbcr_human_local <-   read.delim(paste(data_location_correct, 'pbcr_human_local.txt', sep = ''))
+pbcr_human_local <- extract_rows(whole_dataframe = pbcr_human_local, small_dataframe = human_NN_reads, intersect_column_first = "sequence", intersect_column_second = "name", complement = T)
 
 ######### LSC #############
 #******* global **********#
 lsc_ecoli_global <- read.delim(paste(data_location_correct, 'lsc_ecoli_global.txt', sep = ''))
 lsc_trypanosoma_global <-   read.delim(paste(data_location_correct, 'lsc_trypanosoma_global.txt', sep = ''))
+lsc_trypanosoma_global <- extract_rows(whole_dataframe = lsc_trypanosoma_global, small_dataframe = trypanosoma_NN_reads, intersect_column_first = "sequence", intersect_column_second = "name", complement = T)
 lsc_yeast_global <-   read.delim(paste(data_location_correct, 'lsc_yeast_global.txt', sep = ''))
 lsc_rice_global <- read.delim(paste(data_location_correct, 'lsc_rice_global.txt', sep = ''))
+lsc_rice_global <- extract_rows(whole_dataframe = lsc_rice_global, small_dataframe = rice_NN_reads, intersect_column_first = "sequence", intersect_column_second = "name", complement = T)
 lsc_human_global <-   read.delim(paste(data_location_correct, 'lsc_human_global.txt', sep = ''))
+lsc_human_global <- extract_rows(whole_dataframe = lsc_human_global, small_dataframe = human_NN_reads, intersect_column_first = "sequence", intersect_column_second = "name", complement = T)
 
 ##### Read original alignment #######
 
 ecoli_original_align <- read.delim(paste(data_location_original, 'ecoli_global.txt', sep = ''))
 trypanosoma_original_align <- read.delim(paste(data_location_original, 'trypanosoma_global.txt', sep = ''))
+trypanosoma_original_align <- extract_rows(whole_dataframe = trypanosoma_original_align, small_dataframe = trypanosoma_NN_reads, intersect_column_first = "seq_name", intersect_column_second = "name", complement = T)
 yeast_original_align <- read.delim(paste(data_location_original, 'yeast_global.txt', sep = ''))
 rice_original_align <- read.delim(paste(data_location_original, 'rice_global.txt', sep = ''))
+rice_original_align <- extract_rows(whole_dataframe = rice_original_align, small_dataframe = rice_NN_reads, intersect_column_first = "seq_name", intersect_column_second = "name", complement = T)
 human_original_align <- read.delim(paste(data_location_original, 'human_global.txt', sep = ''))
+human_original_align <- extract_rows(whole_dataframe = human_original_align, small_dataframe = human_NN_reads, intersect_column_first = "seq_name", intersect_column_second = "name", complement = T)
 
 #######################################################################################################################################################
 
