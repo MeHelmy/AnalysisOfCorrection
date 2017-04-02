@@ -198,6 +198,9 @@ plot_read_percentage <- function(local_data_frame_ecoli, local_data_frame_trypan
   #   plot_title <- "Human corrected read number percentage"
   # }
   
+  # first extract reads that contains NN
+  
+  
   lordec_ecoli <- (nrow(subset(local_data_frame_ecoli[local_data_frame_ecoli$software=='LoRDEC',], !duplicated(seq_name)))/number_of_reads_ecoli)*100
   pbcr_ecoli <- (nrow(subset(local_data_frame_ecoli[local_data_frame_ecoli$software=='PBcR',], !duplicated(seq_name)))/number_of_reads_ecoli)*100
   proovread_ecoli <- (nrow(subset(local_data_frame_ecoli[local_data_frame_ecoli$software=='proovread',], !duplicated(seq_name)))/number_of_reads_ecoli)*100
@@ -237,7 +240,8 @@ get_full_read_percentage <- function(ecoli_lordec, ecoli_proovread, ecoli_lsc,
                                      ecoli_number_of_original_reads, yeast_number_of_original_reads, trypanosoma_number_of_original_reads,
                                      rice_number_of_original_reads, human_number_of_original_reads){
   
-  # remeber to remove the reads that contains N from trypanosoma, rics and human
+# remeber to remove the reads that contains N from trypanosoma, rics and human
+  
   
 organism_correct_percentage <- data.frame(Tool=c('LoRDEC', 'proovread', 'lsc'),
                                             E.coli=c((ecoli_lordec/ecoli_number_of_original_reads)*100, (ecoli_proovread/ecoli_number_of_original_reads)*100, (ecoli_lsc/ecoli_number_of_original_reads)*100),
@@ -415,13 +419,32 @@ rice_original_align <- extract_rows(whole_dataframe = rice_original_align, small
 human_original_align <- read.delim(paste(data_location_original, 'human_global.txt', sep = ''))
 human_original_align <- extract_rows(whole_dataframe = human_original_align, small_dataframe = human_NN_reads, intersect_column_first = "seq_name", intersect_column_second = "name", complement = T)
 
+
+############## extract Number of NN reads from the corrected read number ##########################
+
+lordec_ecoli_number_of_all_corrected_reads <- 30364
+lsc_ecoli_number_of_all_corrected_reads <- 30317
+proovread_ecoli_number_of_all_corrected_reads <-  30360
+
+lordec_trypanosoma_number_of_all_corrected_reads <- nrow(lordec_trypanosoma_global)
+lsc_trypanosoma_number_of_all_corrected_reads <- nrow(lsc_trypanosoma_global)
+proovread_trypanosoma_number_of_all_corrected_reads <- nrow(proovread_trypanosoma_global)
+
+lordec_rice_number_of_all_corrected_reads <- nrow(lordec_rice_global)
+lsc_rice_number_of_all_corrected_reads <- nrow(lsc_rice_global)
+proovread_rice_number_of_all_corrected_reads <- nrow(proovread_rice_global)
+
+lordec_human_number_of_all_corrected_reads <- nrow(lordec_human_global)
+lsc_human_number_of_all_corrected_reads <- nrow(lsc_human_global)
+proovread_human_number_of_all_corrected_reads <-  nrow(proovread_human_global)
+
 #######################################################################################################################################################
 
 
 # create data frame that gathers all local and global with the before correction alignment seprated 
 # ecoli
 
-ecoli_local <- merge_all_species_corrected_data(lordec = lordec_ecoli_local, proovread = proovread_ecoli_local, pbcr = pbcr_ecoli_local, original_align = data_location_original, align = 'local')
+ecoli_local <- merge_all_species_corrected_data(lordec = lordec_ecoli_local, proovread = proovread_ecoli_local, pbcr = pbcr_ecoli_local, original_align = ecoli_original_align, align = 'local')
 ecoli_global <- merge_all_species_corrected_data(lordec = lordec_ecoli_global, proovread = proovread_ecoli_global, lsc = lsc_ecoli_global, original_align = ecoli_original_align, align = 'global')
 
 # trypanosoma
