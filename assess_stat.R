@@ -120,7 +120,7 @@ plot_efficiency_distribtion <- function(dist_data_frame, organism, align){
   return( ggplot(data = dist_data_frame, aes(software, subsimilarity))  +
             geom_violin(scale = "area", aes(fill = software)) + my_scale_manual_fill(name = "Software", color_manual = myColors) +
             labs(title = plot_title, x = "Software", y = "Efficiency")+
-           scale_y_continuous(breaks=seq(0,100,by=25), limits=c(0,100)) )
+           scale_y_continuous(breaks=seq(0,100,by=25), limits=c(0,100)) + theme_bw() )
 }
 
 plot_length_distribution <- function(organism_data_frame, organism){
@@ -332,6 +332,41 @@ plot_clipped_length_distribution <- function(clipped_data_frame,  x_axes, legen_
  return( ggplot(clipped_data_frame, aes(lost_data, color=software, fill=software)) +
     geom_freqpoly(binwidth = bins) + labs(title = plot_title, x = x_axes) +
     my_scale_manual_color(name = legen_name, color_manual = manual_color) + my_scale_manual_fill(name = legen_name, color_manual = manual_color)+ theme_bw() )
+}
+
+# function to plot the relarion between the lengt before and after correction
+plot_corrected_length_vs_original <- function(clipped_data_frame,  x_axes = "Read length", legen_name = "Type", bins = 30, organism, manual_color = myColors, aggregate_data = TRUE , aggregate_value = 5000, clipped_filed)
+{
+  if(organism == "ecoli")
+    {
+    plot_title <- "E.coli Distribution of length after correction with the original length"
+    }
+    else if(organism == "trypanosoma")
+    {
+    plot_title <- "Trypanosoma Distribution of length after correction with the original length"
+    }
+    else if(organism == "yeast")
+    {
+    plot_title <- "Yeast Distribution of length after correction with the original length"
+    }else if(organism == "rice")
+    {
+    plot_title <- "Rice Distribution of length after correction with the original length"
+    } 
+    else
+    {
+    plot_title <- "Human Distribution of length after correction with the original length"
+    }
+   
+  #change order of legend
+  clipped_data_frame$Type <- factor(clipped_data_frame$Type, levels=c("Original", "LoRDEC" ,  "PBcR", "proovread"))
+  
+  if(aggregate_data){
+    clipped_data_frame[clipped_data_frame[[clipped_filed]] > 5000, clipped_filed] <- aggregate_value
+  }
+  
+  return(ggplot(clipped_data_frame, aes(subLength, color=Type, fill=Type)) +
+    geom_freqpoly(binwidth = bins) + labs(title = plot_title, x = x_axes) +
+    my_scale_manual_color(name = legen_name, color_manual = manual_color) + my_scale_manual_fill(name = legen_name, color_manual = manual_color)+ theme_bw())
 }
 
 # function to extrct complement rows from two dataframes
@@ -571,38 +606,26 @@ clipped_efficienct_global <- grid.arrange(ecoli_global_efficiency_plot, trypanos
 # 2- clipped data
 
 # ecoli 
-draw_ecoli_clipped_data <- ggplot(ecoli_clipped_data, aes(lost_data)) +
- geom_density(aes(color=software, fill=software), alpha=0.1) + labs(title = "E.coli clipped data", x = "Clipped data") +
-  my_scale_manual_color(name = "Software", color_manual = myColors) + my_scale_manual_fill(name = "Software", color_manual = myColors)
-
 draw_ecoli_clipped_data <- plot_clipped_length_distribution(clipped_data_frame = ecoli_clipped_data, x_axes = "Clipped data", legen_name = "Software", bins = 150, organism = "ecoli", manual_color = myColors, aggregate_data = TRUE, aggregate_value = 5000, clipped_filed = "lost_data")
 
 # trypanosoma
-draw_trypanosoma_clipped_data <- ggplot(trypanosoma_clipped_data, aes(lost_data)) +
- geom_density(aes(color=software, fill=software), alpha=0.1) + labs(title = "Trypanosoma clipped data", x = "Clipped data") +
-  my_scale_manual_color(name = "Software", color_manual = myColors) + my_scale_manual_fill(name = "Software", color_manual = myColors)
+draw_trypanosoma_clipped_data <- plot_clipped_length_distribution(clipped_data_frame = trypanosoma_clipped_data, x_axes = "Clipped data", legen_name = "Software", bins = 150, organism = "trypanosoma", manual_color = myColors, aggregate_data = TRUE, aggregate_value = 5000, clipped_filed = "lost_data")
 
 # yeast
-draw_yeast_clipped_data <- ggplot(yeast_clipped_data, aes(lost_data)) +
- geom_density(aes(color=software, fill=software), alpha=0.1) + labs(title = "Yeast clipped data", x = "Clipped data") +
-  my_scale_manual_color(name = "Software", color_manual = myColors) + my_scale_manual_fill(name = "Software", color_manual = myColors)
+draw_yeast_clipped_data <- plot_clipped_length_distribution(clipped_data_frame = yeast_clipped_data, x_axes = "Clipped data", legen_name = "Software", bins = 150, organism = "yeast", manual_color = myColors, aggregate_data = TRUE, aggregate_value = 5000, clipped_filed = "lost_data")
 
 # rice
-draw_rice_clipped_data <- ggplot(rice_clipped_data, aes(lost_data)) +
- geom_density(aes(color=software, fill=software), alpha=0.1) + labs(title = "Rice clipped data", x = "Clipped data") +
-  my_scale_manual_color(name = "Software", color_manual = myColors) + my_scale_manual_fill(name = "Software", color_manual = myColors)
+draw_rice_clipped_data <- draw_yeast_clipped_data <- plot_clipped_length_distribution(clipped_data_frame = rice_clipped_data, x_axes = "Clipped data", legen_name = "Software", bins = 150, organism = "rice", manual_color = myColors, aggregate_data = TRUE, aggregate_value = 5000, clipped_filed = "lost_data")
 
 # human
-draw_human_clipped_data <- ggplot(human_clipped_data, aes(lost_data)) +
- geom_density(aes(color=software, fill=software), alpha=0.1) + labs(title = "Human clipped data", x = "Clipped data") +
-  my_scale_manual_color(name = "Software", color_manual = myColors) + my_scale_manual_fill(name = "Software", color_manual = myColors)
+draw_human_clipped_data <- draw_yeast_clipped_data <- plot_clipped_length_distribution(clipped_data_frame = human_clipped_data, x_axes = "Clipped data", legen_name = "Software", bins = 150, organism = "human", manual_color = myColors, aggregate_data = TRUE, aggregate_value = 5000, clipped_filed = "lost_data")
 
 clipped_reads_dist <- grid.arrange(draw_ecoli_clipped_data, draw_trypanosoma_clipped_data, draw_yeast_clipped_data,
                                    draw_rice_clipped_data, draw_human_clipped_data, ncol = 2, top = "Clipped sequence distribution")
 
                                          ##################################################
 
-# 3- distribution of length
+# 3- distribution of length --> please see #6 first
 
 ecoli_length_distribution <- plot_length_distribution(ecoli_local, organism = 'ecoli')
 trypanosoma_length_distribution <- plot_length_distribution(trypanosoma_local, organism = 'trypanosoma')
@@ -727,7 +750,7 @@ ggplot(read_nucelotide_comapre, aes(x = Organism, y = Efficiency, fill = name))+
 corrected_full_reads_percentage_plot <- ggplot(percentage_of_full_corrected_reads,aes(Organism,Efficiency, fill=Tool)) + 
   geom_bar(stat="identity", position=position_dodge()) +   geom_text(aes(label = round(Efficiency,1)) , position=position_dodge(width=0.9), vjust=-0.25, size = 3) + 
   labs(title = "Percentage of full corrected reads ", x = "Organism") + my_scale_manual_fill(color_manual = myColors)
-my_scale_manual_fill(color_manual = myColors)
+
   
 percentage_of_correction <- grid.arrange(  corrected_reads_percentage_plot,
                                            corrected_nucleotides_percentage_plot, ncol = 2, top = "Correction percentage")
@@ -737,6 +760,8 @@ percentage_of_correction <- grid.arrange(  corrected_reads_percentage_plot,
 ecoli_compare_original_with_corrected_plot <- ggplot(ecoli_compare_original_with_corrected, aes(subLength)) + geom_density(aes(fill=Type, color = Type) , alpha=0.1) +
   my_scale_manual_color(name = "Type", color_manual = myColors) + my_scale_manual_fill(name = "Type", color_manual = myColors) +
   labs(title = "E.coli Distribution of length after correction with the original length", x = "Read length")
+plot_corrected_length_vs_original(clipped_data_frame = ecoli_compare_original_with_corrected, organism = "ecoli", aggregate_data = TRUE, aggregate_value = 10000, clipped_filed = "subLength", bins = 150)
+
 trypanosoma_compare_original_with_corrected_plot <- ggplot(trypanosoma_compare_original_with_corrected, aes(subLength)) + geom_density(aes(fill=Type, color = Type) , alpha=0.1) +
   my_scale_manual_color(name = "Type", color_manual = myColors) + my_scale_manual_fill(name = "Type", color_manual = myColors)+
   labs(title = "Trypanosoma Distribution of length after correction with the original length", x = "Read length")
@@ -790,4 +815,11 @@ organism_global_compare_length <- grid.arrange(ecoli_correction_rate_compare , t
 ###########################  TEST REGION ##############################################################################
 
 
+
 zero_data_human_proovread <- proovread_human_global[proovread_human_global$subsimilarity < 1,]
+
+
+
+ggplot(n, aes(subLength)) + geom_density(aes(fill=Type, color = Type) , alpha=0.1) +
+  my_scale_manual_color(name = "Type", color_manual = myColors) + my_scale_manual_fill(name = "Type", color_manual = myColors) +
+  labs(title = "E.coli Distribution of length after correction with the original length", x = "Read length")
