@@ -178,9 +178,7 @@ plot_corrected_length_vs_efficiency <- function(organism_data_frame, organism, a
           # geom_bin2d(binwidth = c(50,2)) + 
           # facet_grid(software ~ .) + 
           # scale_fill_gradientn(colours=rainbow(20)) +
-         labs(title = plot_title, x = "Correction length", y = "Efficiency")+ scale_y_continuous(breaks=seq(0,100,by=25), limits=c(0,100)) ) 
-
-
+         labs(title = plot_title, x = "Correction length", y = "Efficiency")+ scale_y_continuous(breaks=seq(0,100,by=25), limits=c(0,100)) + theme_bw() ) 
 }
 
 plot_read_percentage <- function(local_data_frame_ecoli, local_data_frame_trypanosoma,
@@ -306,7 +304,12 @@ get_global_alignment_comarison <- function(golbal_data_frame, original_data_fram
 }
 
 # draw plot for comparion the correction rate between the original uncorrected reads and corrected
-compare_global_correction_plot <- function(compare_data_frame, title, x_axes, y_axes, bins = 30){
+compare_global_correction_plot <- function(compare_data_frame, title, x_axes, y_axes, bins = 30, plot_colour = myColors){
+  
+  #change order of legend
+
+  compare_data_frame$software <- factor(compare_data_frame$software, levels=c("Original reads", "LoRDEC" ,  "lsc", "proovread"))
+
   return( ggplot(data = compare_data_frame, aes(subsimilarity, colour = software )) + geom_freqpoly(binwidth = bins) + theme_bw() + scale_x_continuous(breaks=seq(0,105,by=20), limits=c(0,105)) +
             labs(title = title, x = x_axes, y = y_axes , colour = "comnpare") +  my_scale_manual_color(name = "Software and original reads", color_manual = myColors_original) )
 }
@@ -326,7 +329,7 @@ plot_clipped_length_distribution <- function(clipped_data_frame,  x_axes, legen_
     plot_title <- "Human clipped data"
   }
   if(aggregate_data){
-    clipped_data_frame[clipped_data_frame[[clipped_filed]] > 5000, clipped_filed] <- aggregate_value
+    clipped_data_frame[clipped_data_frame[[clipped_filed]] > aggregate_value, clipped_filed] <- aggregate_value
   }
   
  return( ggplot(clipped_data_frame, aes(lost_data, color=software, fill=software)) +
@@ -361,7 +364,7 @@ plot_corrected_length_vs_original <- function(clipped_data_frame,  x_axes = "Rea
   clipped_data_frame$Type <- factor(clipped_data_frame$Type, levels=c("Original", "LoRDEC" ,  "PBcR", "proovread"))
   
   if(aggregate_data){
-    clipped_data_frame[clipped_data_frame[[clipped_filed]] > 5000, clipped_filed] <- aggregate_value
+    clipped_data_frame[clipped_data_frame[[clipped_filed]] > aggregate_value, clipped_filed] <- aggregate_value
   }
   
   return(ggplot(clipped_data_frame, aes(subLength, color=Type, fill=Type)) +
@@ -386,8 +389,11 @@ extract_rows <- function(whole_dataframe, small_dataframe, intersect_column_firs
 myColors <- c(brewer.pal(4,"Set1"), "#000000")
 names(myColors) <- c("LoRDEC",  "lsc", "proovread", "PBcR", "Original")
 
-myColors_original <- brewer.pal(5,"Set1")
-names(myColors_original) <- c("LoRDEC", "proovread", "PBcR", "lsc", "Original reads")
+myColors_original <- c(brewer.pal(4,"Set1"), "#000000")
+names(myColors_original) <- c("LoRDEC",  "lsc", "proovread", "PBcR", "Original reads")
+
+# myColors_original <- brewer.pal(5,"Set1")
+# names(myColors_original) <- c("LoRDEC", "proovread", "PBcR", "lsc", "Original reads")
 
 my_scale_manual_fill <- function(name = "Software", color_manual, ...) {
   scale_fill_manual(values=color_manual, name = name, ...)
@@ -719,8 +725,8 @@ read_nucelotide_comapre <- rbind(crp, cnp)
 
 # http://stackoverflow.com/questions/40102676/combine-two-data-frames-in-one-graph
 
-ggplot(read_nucelotide_comapre)+geom_bar(aes(x=Organism,y=Efficiency,group=interaction(name,Tool),fill=Tool,alpha=name),position="dodge",colour="grey",stat="identity")+ scale_alpha_discrete(range = c(0.5, 1), name = "Nuceltoides/Reads") +
-  labs(title = "Comparing tools performance in different organisms", y = "Percentage") + my_scale_manual_fill(color_manual = myColors)
+corrected_reads_nucleotides_percentages <- ggplot(read_nucelotide_comapre)+geom_bar(aes(x=Organism,y=Efficiency,group=interaction(name,Tool),fill=Tool,alpha=name),position="dodge",colour="grey",stat="identity")+ scale_alpha_discrete(range = c(0.5, 1), name = "Nuceltoides/Reads") +
+  labs(title = "Comparing tools performance in different organisms", y = "Percentage") + my_scale_manual_fill(color_manual = myColors) + theme_bw()
 
 # ggplot(d)+geom_bar(aes(x=Organism,y=Efficiency,group=interaction(name,Tool),fill=Tool,alpha=name),position="dodge",colour="grey",stat="identity")+ scale_alpha_discrete(limits = c(0.2, 1))
 # ggplot(d, aes(x=Organism, y=Efficiency , group=Tool, fill=Tool,  colour=name)) +
@@ -755,25 +761,17 @@ corrected_full_reads_percentage_plot <- ggplot(percentage_of_full_corrected_read
 percentage_of_correction <- grid.arrange(  corrected_reads_percentage_plot,
                                            corrected_nucleotides_percentage_plot, ncol = 2, top = "Correction percentage")
 
-# 6- compare lengthes with original
 
-ecoli_compare_original_with_corrected_plot <- ggplot(ecoli_compare_original_with_corrected, aes(subLength)) + geom_density(aes(fill=Type, color = Type) , alpha=0.1) +
-  my_scale_manual_color(name = "Type", color_manual = myColors) + my_scale_manual_fill(name = "Type", color_manual = myColors) +
-  labs(title = "E.coli Distribution of length after correction with the original length", x = "Read length")
-plot_corrected_length_vs_original(clipped_data_frame = ecoli_compare_original_with_corrected, organism = "ecoli", aggregate_data = TRUE, aggregate_value = 10000, clipped_filed = "subLength", bins = 150)
+# 6- compare lengthes with original  -- > related to number 3 this is takes original read in consideration
+ecoli_compare_original_with_corrected_plot <- plot_corrected_length_vs_original(clipped_data_frame = ecoli_compare_original_with_corrected, organism = "ecoli", aggregate_data = TRUE, aggregate_value = 5000, clipped_filed = "subLength", bins = 150)
 
-trypanosoma_compare_original_with_corrected_plot <- ggplot(trypanosoma_compare_original_with_corrected, aes(subLength)) + geom_density(aes(fill=Type, color = Type) , alpha=0.1) +
-  my_scale_manual_color(name = "Type", color_manual = myColors) + my_scale_manual_fill(name = "Type", color_manual = myColors)+
-  labs(title = "Trypanosoma Distribution of length after correction with the original length", x = "Read length")
-yeast_compare_original_with_corrected_plot <- ggplot(yeast_compare_original_with_corrected, aes(subLength)) + geom_density(aes(fill=Type, color = Type) , alpha=0.1) +
-  my_scale_manual_color(name = "Type", color_manual = myColors) + my_scale_manual_fill(name = "Type", color_manual = myColors)+
-  labs(title = "Yeast Distribution of length after correction with the original length", x = "Read length")
-rice_compare_original_with_corrected_plot <- ggplot(rice_compare_original_with_corrected, aes(subLength)) + geom_density(aes(fill=Type, color = Type) , alpha=0.1) +
-  my_scale_manual_color(name = "Type", color_manual = myColors) + my_scale_manual_fill(name = "Type", color_manual = myColors)+
-  labs(title = "Rice Distribution of length after correction with the original length", x = "Read length")
-human_compare_original_with_corrected_plot <- ggplot(human_compare_original_with_corrected, aes(subLength)) + geom_density(aes(fill=Type, color = Type) , alpha=0.1) +
-  my_scale_manual_color(name = "Type", color_manual = myColors) + my_scale_manual_fill(name = "Type", color_manual = myColors)+
-  labs(title = "Human Distribution of length after correction with the original length", x = "Read length")
+trypanosoma_compare_original_with_corrected_plot <- plot_corrected_length_vs_original(clipped_data_frame = trypanosoma_compare_original_with_corrected, organism = "trypanosoma", aggregate_data = TRUE, aggregate_value = 5000, clipped_filed = "subLength", bins = 150)
+
+yeast_compare_original_with_corrected_plot <- plot_corrected_length_vs_original(clipped_data_frame = yeast_compare_original_with_corrected, organism = "yeast", aggregate_data = TRUE, aggregate_value = 5000, clipped_filed = "subLength", bins = 150)
+
+rice_compare_original_with_corrected_plot <- plot_corrected_length_vs_original(clipped_data_frame = rice_compare_original_with_corrected, organism = "rice", aggregate_data = TRUE, aggregate_value = 5000, clipped_filed = "subLength", bins = 150)
+
+human_compare_original_with_corrected_plot <- plot_corrected_length_vs_original(clipped_data_frame = human_compare_original_with_corrected, organism = "human", aggregate_data = TRUE, aggregate_value = 5000, clipped_filed = "subLength", bins = 150)
 
 length_comparison <- grid.arrange(ecoli_compare_original_with_corrected_plot, trypanosoma_compare_original_with_corrected_plot, yeast_compare_original_with_corrected_plot,
                                   rice_compare_original_with_corrected_plot, human_compare_original_with_corrected_plot, ncol = 2, top = "Correction length with original")
@@ -792,7 +790,7 @@ length_comparison <- grid.arrange(ecoli_compare_original_with_corrected_plot, tr
 # c1 <-c %>% group_by(seq_name)
 # subset(c, !duplicated(seq_name))
 
-
+# 7 compare the global length correction efficience with the original one
 ecoli_global_compare <- get_global_alignment_comarison(golbal_data_frame = ecoli_global, original_data_frame = ecoli_original_align)
 ecoli_correction_rate_compare <- compare_global_correction_plot(ecoli_global_compare, "E.coli corrected vs not corrected reads similarity", "Similarity", "count", bins = 1)
 
@@ -814,11 +812,13 @@ organism_global_compare_length <- grid.arrange(ecoli_correction_rate_compare , t
 
 ###########################  TEST REGION ##############################################################################
 
-
-
+su <- function(df){
+  print(nrow(df))
+  return(summary(df$subLength))
+}
 zero_data_human_proovread <- proovread_human_global[proovread_human_global$subsimilarity < 1,]
-
-
+n <- ecoli_global_compare
+n$software <- factor(n$software, levels=c("Original reads", "LoRDEC" ,  "lsc", "proovread"))
 
 ggplot(n, aes(subLength)) + geom_density(aes(fill=Type, color = Type) , alpha=0.1) +
   my_scale_manual_color(name = "Type", color_manual = myColors) + my_scale_manual_fill(name = "Type", color_manual = myColors) +
