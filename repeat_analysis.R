@@ -2,13 +2,37 @@
 # global constant
 column_names <- c("ch", "begin", "end", "name", "chr_ref", "begin_ref", "enf_ref", "repeat", "score", "strand", "repeat_family", "intersect_length")
 
+
+human_NN_reads <- read.delim("/data/test_data_from_server_maize/assessment_2016-08-29/complementory_data/human21_pacbio_original_nucleotide_N_freq.bed")
+rice_NN_reads <- read.delim("/data/test_data_from_server_maize/assessment_2016-08-29/complementory_data/rice_pacbio_original_nucleotide_N_freq.bed")
+trypanosoma_NN_reads <- read.delim("/data/test_data_from_server_maize/assessment_2016-08-29/complementory_data/trypanosoma_pacbio_original_nucleotide_N_freq.bed")
+
+
 #==================================================
 # Functions
 
-analysis_repeat <- function(cor_repeat_data_frame, uncor_repeat_data_frame, columns_name, organism){
+extract_rows <- function(whole_dataframe, small_dataframe, intersect_column_first, intersect_column_second, complement=TRUE){
+  if(complement){
+    return(subset(whole_dataframe, !(whole_dataframe[[intersect_column_first]] %in% small_dataframe[[intersect_column_second]])))
+  }else{
+    return(subset(whole_dataframe, (whole_dataframe[[intersect_column_first]] %in% small_dataframe[[intersect_column_second]])))
+  }
+  
+}
+
+
+
+analysis_repeat <- function(cor_repeat_data_frame, uncor_repeat_data_frame, columns_name, organism, NN_data){
   
   colnames(cor_repeat_data_frame) <- column_names
   colnames(uncor_repeat_data_frame) <- column_names
+  
+  if(!(missing(NN_data))){
+  cor_repeat_data_frame <- separate(cor_repeat_data_frame, name, c('read', 'sigment'), "\\.", extra = "merge", remove = F, fill = "right")
+  cor_repeat_data_frame <- extract_rows(whole_dataframe = cor_repeat_data_frame, small_dataframe = NN_data, intersect_column_first = "read", intersect_column_second = "name")
+  uncor_repeat_data_frame <- separate(uncor_repeat_data_frame, name, c('read', 'sigment'), "\\.", extra = "merge", remove = F, fill = "right")
+  uncor_repeat_data_frame <- extract_rows(whole_dataframe = uncor_repeat_data_frame, small_dataframe = NN_data, intersect_column_first = "read", intersect_column_second = "name")
+  }
   
   cor_repeat_data_frame_sum_of_repeat <- sum(cor_repeat_data_frame$intersect_length)
   uncor_repeat_data_frame_sum_of_repeat  <- sum(uncor_repeat_data_frame$intersect_length)
@@ -22,8 +46,6 @@ analysis_repeat <- function(cor_repeat_data_frame, uncor_repeat_data_frame, colu
   )
  
   return(mutate(data_repeat_percentage, percentage_of_repeat = (SumOfRepeat/SumOfLength)*100, Organism = organism))
-  
-  
 }
 
 #==================================================
@@ -44,7 +66,10 @@ uncor_repeat_human <- read.delim("/data/test_data_from_server_maize/proovread/hu
 
 
 yeast_repeat_percentage <- analysis_repeat(cor_repeat_data_frame = cor_repeat_yeast, uncor_repeat_data_frame = uncor_repeat_yeast, columns_name = column_names, organism = "Yeast")
-trypanosoma_repeat_percentage <- analysis_repeat(cor_repeat_data_frame = cor_repeat_trypanosoma, uncor_repeat_data_frame = uncor_repeat_trypanosoma, columns_name = column_names, organism = "Trypanosoma")
+
+trypanosoma_repeat_percentage <- analysis_repeat(cor_repeat_data_frame = cor_repeat_trypanosoma, uncor_repeat_data_frame = uncor_repeat_trypanosoma, columns_name = column_names,
+                                                 organism = "Trypanosoma", NN_data = trypanosoma_NN_reads)
+
 rice_repeat_percentage <- analysis_repeat(cor_repeat_data_frame = cor_repeat_rice, uncor_repeat_data_frame = uncor_repeat_rice, columns_name = column_names, organism = "Rice")
 human_repeat_percentage <- analysis_repeat(cor_repeat_data_frame = cor_repeat_human, uncor_repeat_data_frame = uncor_repeat_human, columns_name = column_names, organism = "Human")
 
