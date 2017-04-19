@@ -581,7 +581,7 @@ human_compare_original_with_corrected <- compare_length(organism_data_frame = hu
 # 1- distribution of efficiency 
 
 # ecoli
-ecoli_local_efficiency_plot <- plot_efficiency_distribtion(dist_data_frame = LoRDEC, organism = "ecoli", align = "local")
+ecoli_local_efficiency_plot <- plot_efficiency_distribtion(dist_data_frame = ecoli_local, organism = "ecoli", align = "local")
 ecoli_global_efficiency_plot <- plot_efficiency_distribtion(dist_data_frame = ecoli_global, organism = "ecoli", align = "global")
 
 # trypanosoma
