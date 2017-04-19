@@ -7,11 +7,30 @@ library(ggplot2)
 library(plyr)
 library(grid)
 library(gridExtra)
+library(tidyr)
 
 # ===============================================
 # Global variable
 
 data_location <- "/data/test_data_from_server_maize/assessment_2016-08-29/complexity/"
+
+
+human_NN_reads <- read.delim("/data/test_data_from_server_maize/assessment_2016-08-29/complementory_data/human21_pacbio_original_nucleotide_N_freq.bed")
+rice_NN_reads <- read.delim("/data/test_data_from_server_maize/assessment_2016-08-29/complementory_data/rice_pacbio_original_nucleotide_N_freq.bed")
+trypanosoma_NN_reads <- read.delim("/data/test_data_from_server_maize/assessment_2016-08-29/complementory_data/trypanosoma_pacbio_original_nucleotide_N_freq.bed")
+
+
+# ===============================================
+# Functions
+
+extract_rows <- function(whole_dataframe, small_dataframe, intersect_column_first, intersect_column_second, complement=TRUE){
+  if(complement){
+    return(subset(whole_dataframe, !(whole_dataframe[[intersect_column_first]] %in% small_dataframe[[intersect_column_second]])))
+  }else{
+    return(subset(whole_dataframe, (whole_dataframe[[intersect_column_first]] %in% small_dataframe[[intersect_column_second]])))
+  }
+  
+}
 
 # ===============================================
 # Read Data
@@ -19,11 +38,21 @@ data_location <- "/data/test_data_from_server_maize/assessment_2016-08-29/comple
 ecoli_corrected_complexity <- read.delim(paste(data_location, 'ecoli_corrected_reads_complexity.txt', sep = ''))
 ecoli_uncorrected_complexity <- read.delim(paste(data_location, 'ecoli_uncorrected_reads_complexity.txt', sep = ''))
 
+ecoli_corrected_complexity <- separate(ecoli_corrected_complexity, read_name, c('read', 'sigment'), "\\.", extra = "merge", remove = F, fill = "right")
+ecoli_uncorrected_complexity <- separate(ecoli_uncorrected_complexity, read_name, c('read', 'sigment'), "\\.", extra = "merge", remove = F, fill = "right")
+
+
 yeast_corrected_complexity <- read.delim(paste(data_location, 'yeast_corrected_reads_complexity.txt', sep = ''))
 yeast_uncorrected_complexity <- read.delim(paste(data_location, 'yeast_uncorrected_reads_complexity.txt', sep = ''))
 
 trypanosoma_corrected_complexity <- read.delim(paste(data_location, 'trypanosoma_corrected_reads_complexity.txt', sep = ''))
 trypanosoma_uncorrected_complexity <- read.delim(paste(data_location, 'trypanosoma_uncorrected_reads_complexity.txt', sep = ''))
+
+trypanosoma_corrected_complexity <- separate(trypanosoma_corrected_complexity, read_name, c('read', 'sigment'), "\\.", extra = "merge", remove = F, fill = "right")
+trypanosoma_corrected_complexity <- extract_rows(whole_dataframe = trypanosoma_corrected_complexity, small_dataframe = trypanosoma_NN_reads, intersect_column_first = "read", intersect_column_second = "name", complement = T)
+trypanosoma_uncorrected_complexity <- separate(trypanosoma_uncorrected_complexity, read_name, c('read', 'sigment'), "\\.", extra = "merge", remove = F, fill = "right")
+trypanosoma_uncorrected_complexity <- extract_rows(whole_dataframe = trypanosoma_uncorrected_complexity, small_dataframe = trypanosoma_NN_reads, intersect_column_first = "read", intersect_column_second = "name", complement = T)
+
 
 rice_corrected_complexity <- read.delim(paste(data_location, 'rice_corrected_reads_complexity.txt', sep = ''))
 rice_uncorrected_complexity <- read.delim(paste(data_location, 'rice_uncorrected_reads_complexity.txt', sep = ''))
@@ -81,3 +110,6 @@ gc_complexity_compare1 <-  grid.arrange(gc_plot, complexity_plot, ncol = 1)
 # 
 # ggplot(data = yeast, aes(Type, GC))  + geom_violin(scale = "area", aes(fill = Type))
 # ggplot(data = yeast, aes(Type, complexity))  + geom_violin(scale = "area", aes(fill = Type))
+
+# test
+separate(ecoli_corrected_complexity, read_name, c('read', 'sigment'), "\\.", extra = "merge", remove = F, fill = "right")

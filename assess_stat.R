@@ -581,7 +581,7 @@ human_compare_original_with_corrected <- compare_length(organism_data_frame = hu
 # 1- distribution of efficiency 
 
 # ecoli
-ecoli_local_efficiency_plot <- plot_efficiency_distribtion(dist_data_frame = ecoli_local, organism = "ecoli", align = "local")
+ecoli_local_efficiency_plot <- plot_efficiency_distribtion(dist_data_frame = LoRDEC, organism = "ecoli", align = "local")
 ecoli_global_efficiency_plot <- plot_efficiency_distribtion(dist_data_frame = ecoli_global, organism = "ecoli", align = "global")
 
 # trypanosoma
@@ -816,10 +816,23 @@ su <- function(df){
   print(nrow(df))
   return(summary(df$subLength))
 }
-zero_data_human_proovread <- proovread_human_global[proovread_human_global$subsimilarity < 1,]
-n <- ecoli_global_compare
-n$software <- factor(n$software, levels=c("Original reads", "LoRDEC" ,  "lsc", "proovread"))
+#  extract_rows(whole_dataframe = proovread_human_local, small_dataframe = human_NN_reads, intersect_column_first = "sequence", intersect_column_second = "name", complement = T)
 
-ggplot(n, aes(subLength)) + geom_density(aes(fill=Type, color = Type) , alpha=0.1) +
-  my_scale_manual_color(name = "Type", color_manual = myColors) + my_scale_manual_fill(name = "Type", color_manual = myColors) +
-  labs(title = "E.coli Distribution of length after correction with the original length", x = "Read length")
+before_lor_human_local <- lordec_human_local
+extract_lor_human_local <- extract_rows(whole_dataframe = before_lor_human_local, small_dataframe = human_NN_reads, intersect_column_first = "sequence", intersect_column_second = "name", complement = F)
+after_lor_human_local <- extract_rows(whole_dataframe = before_lor_human_local, small_dataframe = human_NN_reads, intersect_column_first = "sequence", intersect_column_second = "name", complement = T)
+before_pro_human_local <- proovread_human_local
+extract_pro_human_local <- extract_rows(whole_dataframe = before_pro_human_local, small_dataframe = human_NN_reads, intersect_column_first = "sequence", intersect_column_second = "name", complement = F)
+after_pro_human_local <- extract_rows(whole_dataframe = before_pro_human_local, small_dataframe = human_NN_reads, intersect_column_first = "sequence", intersect_column_second = "name", complement = T)
+
+
+
+
+
+
+
+
+
+
+
+
