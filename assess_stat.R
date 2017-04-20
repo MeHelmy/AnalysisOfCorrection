@@ -383,6 +383,43 @@ extract_rows <- function(whole_dataframe, small_dataframe, intersect_column_firs
   
 }
 
+
+# function to get the percentage of reads that was corrected with value 100%
+
+similarity_great_than_99 <- function(my_data_frame, align_type = 'local', round_number=10){
+  
+  if(align_type == "local"){
+    lordec <- (nrow(my_data_frame[my_data_frame$software == "LoRDEC" & my_data_frame$subsimilarity > 99,]) / nrow(my_data_frame[my_data_frame$software == "LoRDEC" ,]))*100
+    proovread <- (nrow(my_data_frame[my_data_frame$software == "proovread" & my_data_frame$subsimilarity > 99,]) / nrow(my_data_frame[my_data_frame$software == "proovread" ,]))*100
+    pbcr <- (nrow(my_data_frame[my_data_frame$software == "PBcR" & my_data_frame$subsimilarity > 99,]) / nrow(my_data_frame[my_data_frame$software == "PBcR" ,]))*100
+    print(paste("Local percentage higher than 100% : lordec ->" , round(lordec, digits = round_number) , " proovread -> " , round(proovread, digits = round_number)  , "pbcr -> " , round(pbcr, digits = round_number) ))
+  }
+  else if(align_type == "global"){
+    lordec <- (nrow(my_data_frame[my_data_frame$software == "LoRDEC" & my_data_frame$subsimilarity > 99,]) / nrow(my_data_frame[my_data_frame$software == "LoRDEC" ,]))*100
+    proovread <- (nrow(my_data_frame[my_data_frame$software == "proovread" & my_data_frame$subsimilarity > 99,]) / nrow(my_data_frame[my_data_frame$software == "proovread" ,]))*100
+    lsc <- (nrow(my_data_frame[my_data_frame$software == "lsc" & my_data_frame$subsimilarity > 99,]) / nrow(my_data_frame[my_data_frame$software == "lsc" ,]))*100
+    print(paste("Global percentage higher than 100% : lordec ->" , round(lordec, digits = round_number) , " proovread -> " , round(proovread, digits = round_number)  , "lsc -> " , round(lsc, digits = round_number) ) )
+  }
+  
+}
+
+similarity_equal_great_than_number <- function(my_data_frame, align_type = 'local', round_number=10, compare_value=100){
+  
+  if(align_type == "local"){
+    lordec <- (nrow(my_data_frame[my_data_frame$software == "LoRDEC" & my_data_frame$subsimilarity >= compare_value,]) / nrow(my_data_frame[my_data_frame$software == "LoRDEC" ,]))*100
+    proovread <- (nrow(my_data_frame[my_data_frame$software == "proovread" & my_data_frame$subsimilarity >= compare_value,]) / nrow(my_data_frame[my_data_frame$software == "proovread" ,]))*100
+    pbcr <- (nrow(my_data_frame[my_data_frame$software == "PBcR" & my_data_frame$subsimilarity >= compare_value,]) / nrow(my_data_frame[my_data_frame$software == "PBcR" ,]))*100
+    print(paste("Local percentage higher than Or equal", compare_value, " : lordec ->" , round(lordec, digits = round_number) , " proovread -> " , round(proovread, digits = round_number)  , "pbcr -> " , round(pbcr, digits = round_number) ))
+  }
+  else if(align_type == "global"){
+    lordec <- (nrow(my_data_frame[my_data_frame$software == "LoRDEC" & my_data_frame$subsimilarity >= compare_value,]) / nrow(my_data_frame[my_data_frame$software == "LoRDEC" ,]))*100
+    proovread <- (nrow(my_data_frame[my_data_frame$software == "proovread" & my_data_frame$subsimilarity >= compare_value,]) / nrow(my_data_frame[my_data_frame$software == "proovread" ,]))*100
+    lsc <- (nrow(my_data_frame[my_data_frame$software == "lsc" & my_data_frame$subsimilarity >= compare_value,]) / nrow(my_data_frame[my_data_frame$software == "lsc" ,]))*100
+    print(paste("Global percentage higher than Or equal", compare_value, " : lordec ->" , round(lordec, digits = round_number) , " proovread -> " , round(proovread, digits = round_number)  , "lsc -> " , round(lsc, digits = round_number) ) )
+  }
+  
+}
+
 # color function
 
 
