@@ -658,10 +658,10 @@ draw_trypanosoma_clipped_data <- plot_clipped_length_distribution(clipped_data_f
 draw_yeast_clipped_data <- plot_clipped_length_distribution(clipped_data_frame = yeast_clipped_data, x_axes = "Clipped data", legen_name = "Software", bins = 150, organism = "yeast", manual_color = myColors, aggregate_data = TRUE, aggregate_value = 5000, clipped_filed = "lost_data")
 
 # rice
-draw_rice_clipped_data <- draw_yeast_clipped_data <- plot_clipped_length_distribution(clipped_data_frame = rice_clipped_data, x_axes = "Clipped data", legen_name = "Software", bins = 150, organism = "rice", manual_color = myColors, aggregate_data = TRUE, aggregate_value = 5000, clipped_filed = "lost_data")
+draw_rice_clipped_data <-plot_clipped_length_distribution(clipped_data_frame = rice_clipped_data, x_axes = "Clipped data", legen_name = "Software", bins = 150, organism = "rice", manual_color = myColors, aggregate_data = TRUE, aggregate_value = 5000, clipped_filed = "lost_data")
 
 # human
-draw_human_clipped_data <- draw_yeast_clipped_data <- plot_clipped_length_distribution(clipped_data_frame = human_clipped_data, x_axes = "Clipped data", legen_name = "Software", bins = 150, organism = "human", manual_color = myColors, aggregate_data = TRUE, aggregate_value = 5000, clipped_filed = "lost_data")
+draw_human_clipped_data <- plot_clipped_length_distribution(clipped_data_frame = human_clipped_data, x_axes = "Clipped data", legen_name = "Software", bins = 150, organism = "human", manual_color = myColors, aggregate_data = TRUE, aggregate_value = 5000, clipped_filed = "lost_data")
 
 clipped_reads_dist <- grid.arrange(draw_ecoli_clipped_data, draw_trypanosoma_clipped_data, draw_yeast_clipped_data,
                                    draw_rice_clipped_data, draw_human_clipped_data, ncol = 2, top = "Clipped sequence distribution")
@@ -864,9 +864,9 @@ after_pro_human_local <- extract_rows(whole_dataframe = before_pro_human_local, 
 
 
 
+means <- aggregate(subLength ~  software, yeast_local, mean)
 
-
-
+ggplot(data = yeast_local, aes(software,subLength, fill=software)) + geom_boxplot() + stat_summary(fun.y=mean, colour="darkred", geom="point", shape=18, size=3,show.legend = FALSE) + geom_text(data = means, aes(label = subLength, y = subLength + 0.08)) + labs(title = "Read length comparison", subtitle = "Yeast", x = "Software", y = "Length") 
 
 
 
