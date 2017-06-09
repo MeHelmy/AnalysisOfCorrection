@@ -420,6 +420,9 @@ similarity_equal_great_than_number <- function(my_data_frame, align_type = 'loca
   
 }
 
+count_corrected_bases <- function(myDataFrame){
+  
+}
 # color function
 
 
@@ -864,12 +867,25 @@ after_pro_human_local <- extract_rows(whole_dataframe = before_pro_human_local, 
 
 
 
-means <- aggregate(subLength ~  software, yeast_local, mean)
+means <- aggregate(subLength ~  software, yeast_local, ceiling(mean))
+n <- mutate(means, sub=ceiling(subLength))
+n <- select(n, software, sub)
+n <- rename(n, subLength=sub)
+means <- n
 
-ggplot(data = yeast_local, aes(software,subLength, fill=software)) + geom_boxplot() + stat_summary(fun.y=mean, colour="darkred", geom="point", shape=18, size=3,show.legend = FALSE) + geom_text(data = means, aes(label = subLength, y = subLength + 0.08)) + labs(title = "Read length comparison", subtitle = "Yeast", x = "Software", y = "Length") 
+ggplot(data = yeast_local, aes(software,subLength, fill=software)) + geom_boxplot() + 
+  stat_summary(fun.y=mean, colour="darkred", geom="point", shape=18, size=3,show.legend = FALSE) + 
+  geom_text(data = means, aes(label = subLength, y = subLength + 0.08)) + 
+  labs(title = "Read length comparison", subtitle = "Yeast", x = "Software", y = "Length") 
 
 
+boxplot.stats(yeast_local$subLength)$stats[c(1, 5)]
 
 
+ggplot(data = yeast_local, aes(software,subLength, fill=software)) + geom_boxplot() + stat_summary(fun.y=mean, colour="darkred", geom="point", shape=18, size=3,show.legend = FALSE) + geom_text(data = means, aes(label = subLength, y = subLength + 0.08)) + labs(title = "Read length comparison", subtitle = "Yeast", x = "Software", y = "Length") + coord_cartesian(ylim = (boxplot.stats(yeast_local$subLength)$stats[c(1, 5)])*1.05)
 
-
+ggplot(data = yeast_local, aes(software,subLength, fill=software)) + geom_boxplot(outlier.shape = NA) + 
+  stat_summary(fun.y=mean, colour="darkred", geom="point", shape=18, size=3,show.legend = FALSE) + 
+  geom_text(data = means, aes(label = subLength, y = subLength + 0.08)) + 
+  labs(title = "Read length comparison", subtitle = "Yeast", x = "Software", y = "Length") +      #+ scale_y_continuous(limits = c(0,2000))
+  scale_y_continuous(limits = quantile(yeast_local$subLength, c(0.1, 0.95)))
