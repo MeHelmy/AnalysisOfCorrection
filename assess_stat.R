@@ -421,6 +421,8 @@ similarity_equal_great_than_number <- function(my_data_frame, align_type = 'loca
 }
 
 count_corrected_bases <- function(myDataFrame){
+  newDataFrane <- mutate(myDataFrame, base_amount=(ceiling((subLength*subsimilarity)/100)))
+  return(sum(newDataFrane["base_amount"]))
   
 }
 # color function
