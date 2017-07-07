@@ -369,7 +369,8 @@ plot_corrected_length_vs_original <- function(clipped_data_frame,  x_axes = "Rea
   
   return(ggplot(clipped_data_frame, aes(subLength, color=Type, fill=Type)) +
     geom_freqpoly(binwidth = bins) + labs(title = plot_title, x = x_axes) +
-    my_scale_manual_color(name = legen_name, color_manual = manual_color) + my_scale_manual_fill(name = legen_name, color_manual = manual_color)+ theme_bw())
+    my_scale_manual_color(name = legen_name, color_manual = manual_color) + my_scale_manual_fill(name = legen_name, color_manual = manual_color)+ 
+      scale_x_continuous(breaks=seq(0,3100,by=500), limits = c(0,3100)) +  theme_bw())
 }
 
 # function to extrct complement rows from two dataframes
@@ -616,6 +617,30 @@ yeast_compare_original_with_corrected <- compare_length(organism_data_frame = ye
 rice_compare_original_with_corrected <- compare_length(organism_data_frame = rice_local, organism_origina_align_data_frame = rice_original_align)
 human_compare_original_with_corrected <- compare_length(organism_data_frame = human_local, organism_origina_align_data_frame = human_original_align)
 
+
+# count corrected basses for each software "only split reads"
+
+# 1- PBcR
+pbcr_ecoli_corrected_base_count <- count_corrected_bases(pbcr_ecoli_local)
+pbcr_trypansoma_corrected_base_count <- count_corrected_bases(pbcr_trypanosoma_local)
+pbcr_yeast_corrected_base_count <- count_corrected_bases(pbcr_yeast_local)
+pbcr_rice_corrected_base_count <- count_corrected_bases(pbcr_rice_local)
+pbcr_human_corrected_base_count <- count_corrected_bases(pbcr_human_local)
+
+# 2- Proovread
+proovread_ecoli_corrected_base_count <- count_corrected_bases(proovread_ecoli_local)
+proovread_trypansoma_corrected_base_count <- count_corrected_bases(proovread_trypanosoma_local)
+proovread_yeast_corrected_base_count <- count_corrected_bases(proovread_yeast_local)
+proovread_rice_corrected_base_count <- count_corrected_bases(proovread_rice_local)
+proovread_human_corrected_base_count <- count_corrected_bases(proovread_human_local)
+
+# 3- LoRDEC
+lordec_ecoli_corrected_base_count <- count_corrected_bases(lordec_ecoli_local)
+lordec_trypansoma_corrected_base_count <- count_corrected_bases(lordec_trypanosoma_local)
+lordec_yeast_corrected_base_count <- count_corrected_bases(lordec_yeast_local)
+lordec_rice_corrected_base_count <- count_corrected_bases(lordec_rice_local)
+lordec_human_corrected_base_count <- count_corrected_bases(lordec_human_local)
+
 ######################################################################################################################################################
 
 # draw relations
@@ -805,15 +830,15 @@ percentage_of_correction <- grid.arrange(  corrected_reads_percentage_plot,
 
 
 # 6- compare lengthes with original  -- > related to number 3 this is takes original read in consideration
-ecoli_compare_original_with_corrected_plot <- plot_corrected_length_vs_original(clipped_data_frame = ecoli_compare_original_with_corrected, organism = "ecoli", aggregate_data = TRUE, aggregate_value = 5000, clipped_filed = "subLength", bins = 150)
+ecoli_compare_original_with_corrected_plot <- plot_corrected_length_vs_original(clipped_data_frame = ecoli_compare_original_with_corrected, organism = "ecoli", aggregate_data = TRUE, aggregate_value = 3000, clipped_filed = "subLength", bins = 100)
 
-trypanosoma_compare_original_with_corrected_plot <- plot_corrected_length_vs_original(clipped_data_frame = trypanosoma_compare_original_with_corrected, organism = "trypanosoma", aggregate_data = TRUE, aggregate_value = 5000, clipped_filed = "subLength", bins = 150)
+trypanosoma_compare_original_with_corrected_plot <- plot_corrected_length_vs_original(clipped_data_frame = trypanosoma_compare_original_with_corrected, organism = "trypanosoma", aggregate_data = TRUE, aggregate_value = 3000, clipped_filed = "subLength", bins = 100)
 
-yeast_compare_original_with_corrected_plot <- plot_corrected_length_vs_original(clipped_data_frame = yeast_compare_original_with_corrected, organism = "yeast", aggregate_data = TRUE, aggregate_value = 5000, clipped_filed = "subLength", bins = 150)
+yeast_compare_original_with_corrected_plot <- plot_corrected_length_vs_original(clipped_data_frame = yeast_compare_original_with_corrected, organism = "yeast", aggregate_data = TRUE, aggregate_value = 3000, clipped_filed = "subLength", bins = 100)
 
-rice_compare_original_with_corrected_plot <- plot_corrected_length_vs_original(clipped_data_frame = rice_compare_original_with_corrected, organism = "rice", aggregate_data = TRUE, aggregate_value = 5000, clipped_filed = "subLength", bins = 150)
+rice_compare_original_with_corrected_plot <- plot_corrected_length_vs_original(clipped_data_frame = rice_compare_original_with_corrected, organism = "rice", aggregate_data = TRUE, aggregate_value = 3000, clipped_filed = "subLength", bins = 100)
 
-human_compare_original_with_corrected_plot <- plot_corrected_length_vs_original(clipped_data_frame = human_compare_original_with_corrected, organism = "human", aggregate_data = TRUE, aggregate_value = 5000, clipped_filed = "subLength", bins = 150)
+human_compare_original_with_corrected_plot <- plot_corrected_length_vs_original(clipped_data_frame = human_compare_original_with_corrected, organism = "human", aggregate_data = TRUE, aggregate_value = 3000, clipped_filed = "subLength", bins = 100)
 
 length_comparison <- grid.arrange(ecoli_compare_original_with_corrected_plot, trypanosoma_compare_original_with_corrected_plot, yeast_compare_original_with_corrected_plot,
                                   rice_compare_original_with_corrected_plot, human_compare_original_with_corrected_plot, ncol = 2, top = "Correction length with original")
