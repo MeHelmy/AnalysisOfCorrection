@@ -39,22 +39,30 @@ human_number_of_nucleotide <- 934199660 - sum(human_NN_reads$end)
 lordec_ecoli_number_of_all_corrected_reads <- 30364
 lsc_ecoli_number_of_all_corrected_reads <- 30317
 proovread_ecoli_number_of_all_corrected_reads <-  30360
+halc_ecoli_number_of_all_corrected_reads <- 30364
   
 lordec_trypanosoma_number_of_all_corrected_reads <- 35025
 lsc_trypanosoma_number_of_all_corrected_reads <- 34965
 proovread_trypanosoma_number_of_all_corrected_reads <- 35021
+halc_trypanosoma_number_of_all_corrected_reads <- 35025
   
 lordec_yeast_number_of_all_corrected_reads <- 10198
 lsc_yeast_number_of_all_corrected_reads <- 10183
 proovread_yeast_number_of_all_corrected_reads <- 10196
-  
+halc_yeast_number_of_all_corrected_reads <- 10198
+
+ 
 lordec_rice_number_of_all_corrected_reads <- 243707
 lsc_rice_number_of_all_corrected_reads <- 243243
 proovread_rice_number_of_all_corrected_reads <- 243678 
+halc_rice_number_of_all_corrected_reads <- 243707
   
 lordec_human_number_of_all_corrected_reads <- 311204
 lsc_human_number_of_all_corrected_reads <- 267063
 proovread_human_number_of_all_corrected_reads <-  311167  
+halc_human_number_of_all_corrected_reads <- 311204
+  
+
 ########################################################################################################################################################
 
 # define function
@@ -66,17 +74,19 @@ merge_corrected_original <- function(corrected_data_frame, original_data_frame){
   return(plyr::rename(merge(da, db[,c(1,3:6)], by = "id", all.x=TRUE), c('id'='seq_name')))
 }
 
-merge_all_species_corrected_data <- function(lordec, proovread, pbcr, lsc, original_align, align='local'){
+merge_all_species_corrected_data <- function(lordec, proovread, pbcr, lsc, halc, original_align, align='local'){
   if(align == "local"){
     lordec_data <- merge_corrected_original(corrected_data_frame = lordec, original_data_frame = original_align)
     proovread_data <- merge_corrected_original(corrected_data_frame = proovread, original_data_frame = original_align)
     pbcr_data <- merge_corrected_original(corrected_data_frame = pbcr, original_data_frame = original_align)
-    return(rbind(mutate(lordec_data, software='LoRDEC'), mutate(proovread_data, software='proovread'), mutate(pbcr_data, software='PBcR')))
+    halc_data <- merge_corrected_original(corrected_data_frame = halc, original_data_frame = original_align)
+    return(rbind(mutate(lordec_data, software='LoRDEC'), mutate(proovread_data, software='proovread'), mutate(pbcr_data, software='PBcR'), mutate(halc_data, software='HALC')))
   } else {
     lordec_data <- merge_corrected_original(corrected_data_frame = lordec, original_data_frame = original_align)
     proovread_data <- merge_corrected_original(corrected_data_frame = proovread, original_data_frame = original_align)
     lsc_data <- merge_corrected_original(corrected_data_frame = lsc, original_data_frame = original_align)
-    return(rbind(mutate(lordec_data, software='LoRDEC'), mutate(proovread_data, software='proovread'), mutate(lsc_data, software='lsc')))
+    halc_data <- merge_corrected_original(corrected_data_frame = halc, original_data_frame = original_align)
+    return(rbind(mutate(lordec_data, software='LoRDEC'), mutate(proovread_data, software='proovread'), mutate(lsc_data, software='lsc'), mutate(halc_data, software='HALC')))
   }
 }
 
@@ -526,12 +536,34 @@ rice_original_align <- extract_rows(whole_dataframe = rice_original_align, small
 human_original_align <- read.delim(paste(data_location_original, 'human_global.txt', sep = ''))
 human_original_align <- extract_rows(whole_dataframe = human_original_align, small_dataframe = human_NN_reads, intersect_column_first = "seq_name", intersect_column_second = "name", complement = T)
 
+####### HALC ###########
+#******* local **********#
+halc_ecoli_local <- read.delim(paste(data_location_correct, 'halc_ecoli_local.txt', sep = ''))
+halc_trypanosoma_local <-   read.delim(paste(data_location_correct, 'halc_trypanosoma_local.txt', sep = ''))
+halc_trypanosoma_local <- extract_rows(whole_dataframe = halc_trypanosoma_local, small_dataframe = trypanosoma_NN_reads, intersect_column_first = "sequence", intersect_column_second = "name", complement = T)
+halc_yeast_local <-   read.delim(paste(data_location_correct, 'halc_yeast_local.txt', sep = ''))
+halc_rice_local <- read.delim(paste(data_location_correct, 'halc_rice_local.txt', sep = ''))
+halc_rice_local <- extract_rows(whole_dataframe = halc_rice_local, small_dataframe = rice_NN_reads, intersect_column_first = "sequence", intersect_column_second = "name", complement = T)
+halc_human_local <-   read.delim(paste(data_location_correct, 'halc_human_local.txt', sep = ''))
+halc_human_local <- extract_rows(whole_dataframe = halc_human_local, small_dataframe = human_NN_reads, intersect_column_first = "sequence", intersect_column_second = "name", complement = T)
+
+#******* global **********#
+halc_ecoli_global <- read.delim(paste(data_location_correct, 'halc_ecoli_global.txt', sep = ''))
+halc_trypanosoma_global <-   read.delim(paste(data_location_correct, 'halc_trypanosoma_global.txt', sep = ''))
+halc_trypanosoma_global <- extract_rows(whole_dataframe = halc_trypanosoma_global, small_dataframe = trypanosoma_NN_reads, intersect_column_first = "sequence", intersect_column_second = "name", complement = T)
+halc_yeast_global <-   read.delim(paste(data_location_correct, 'halc_yeast_global.txt', sep = ''))
+halc_rice_global <- read.delim(paste(data_location_correct, 'halc_rice_global.txt', sep = ''))
+halc_rice_global <- extract_rows(whole_dataframe = halc_rice_global, small_dataframe = rice_NN_reads, intersect_column_first = "sequence", intersect_column_second = "name", complement = T)
+halc_human_global <-   read.delim(paste(data_location_correct, 'halc_human_global.txt', sep = ''))
+halc_human_global <- extract_rows(whole_dataframe = halc_human_global, small_dataframe = human_NN_reads, intersect_column_first = "sequence", intersect_column_second = "name", complement = T)
+
 
 ############## extract Number of NN reads from the corrected read number ##########################
 
 lordec_ecoli_number_of_all_corrected_reads <- 30364
 lsc_ecoli_number_of_all_corrected_reads <- 30317
 proovread_ecoli_number_of_all_corrected_reads <-  30360
+halc_ecoli_number_of_all_corrected_reads <- 30364
 
 lordec_trypanosoma_number_of_all_corrected_reads <- nrow(lordec_trypanosoma_global)
 lsc_trypanosoma_number_of_all_corrected_reads <- nrow(lsc_trypanosoma_global)
@@ -551,28 +583,28 @@ proovread_human_number_of_all_corrected_reads <-  nrow(proovread_human_global)
 # create data frame that gathers all local and global with the before correction alignment seprated 
 # ecoli
 
-ecoli_local <- merge_all_species_corrected_data(lordec = lordec_ecoli_local, proovread = proovread_ecoli_local, pbcr = pbcr_ecoli_local, original_align = ecoli_original_align, align = 'local')
-ecoli_global <- merge_all_species_corrected_data(lordec = lordec_ecoli_global, proovread = proovread_ecoli_global, lsc = lsc_ecoli_global, original_align = ecoli_original_align, align = 'global')
+ecoli_local <- merge_all_species_corrected_data(lordec = lordec_ecoli_local, proovread = proovread_ecoli_local, pbcr = pbcr_ecoli_local, halc = halc_ecoli_local, original_align = ecoli_original_align, align = 'local')
+ecoli_global <- merge_all_species_corrected_data(lordec = lordec_ecoli_global, proovread = proovread_ecoli_global, lsc = lsc_ecoli_global, halc = halc_ecoli_global, original_align = ecoli_original_align, align = 'global')
 
 # trypanosoma
 
-trypanosoma_local <- merge_all_species_corrected_data(lordec = lordec_trypanosoma_local, proovread = proovread_trypanosoma_local, pbcr = pbcr_trypanosoma_local, original_align = trypanosoma_original_align, align = 'local')
-trypanosoma_global <- merge_all_species_corrected_data(lordec = lordec_trypanosoma_global, proovread = proovread_trypanosoma_global, lsc = lsc_trypanosoma_global, original_align = trypanosoma_original_align, align = 'global')
+trypanosoma_local <- merge_all_species_corrected_data(lordec = lordec_trypanosoma_local, proovread = proovread_trypanosoma_local, pbcr = pbcr_trypanosoma_local, halc = halc_trypanosoma_local, original_align = trypanosoma_original_align, align = 'local')
+trypanosoma_global <- merge_all_species_corrected_data(lordec = lordec_trypanosoma_global, proovread = proovread_trypanosoma_global, lsc = lsc_trypanosoma_global, halc = halc_trypanosoma_global, original_align = trypanosoma_original_align, align = 'global')
 
 # yeast
 
-yeast_local <- merge_all_species_corrected_data(lordec = lordec_yeast_local, proovread = proovread_yeast_local, pbcr = pbcr_yeast_local, original_align = yeast_original_align, align = 'local')
-yeast_global <- merge_all_species_corrected_data(lordec = lordec_yeast_global, proovread = proovread_yeast_global, lsc = lsc_yeast_global, original_align = yeast_original_align, align = 'global')
+yeast_local <- merge_all_species_corrected_data(lordec = lordec_yeast_local, proovread = proovread_yeast_local, pbcr = pbcr_yeast_local, halc = halc_yeast_local, original_align = yeast_original_align, align = 'local')
+yeast_global <- merge_all_species_corrected_data(lordec = lordec_yeast_global, proovread = proovread_yeast_global, lsc = lsc_yeast_global, halc = halc_yeast_global, original_align = yeast_original_align, align = 'global')
 
 # rice
 
-rice_local <- merge_all_species_corrected_data(lordec = lordec_rice_local, proovread = proovread_rice_local, pbcr = pbcr_rice_local, original_align = rice_original_align, align = 'local')
-rice_global <- merge_all_species_corrected_data(lordec = lordec_rice_global, proovread = proovread_rice_global, lsc = lsc_rice_global, original_align = rice_original_align, align = 'global')
+rice_local <- merge_all_species_corrected_data(lordec = lordec_rice_local, proovread = proovread_rice_local, pbcr = pbcr_rice_local, halc =  halc_rice_local, original_align = rice_original_align, align = 'local')
+rice_global <- merge_all_species_corrected_data(lordec = lordec_rice_global, proovread = proovread_rice_global, lsc = lsc_rice_global, halc = halc_rice_global, original_align = rice_original_align, align = 'global')
 
 # human
 
-human_local <- merge_all_species_corrected_data(lordec = lordec_human_local, proovread = proovread_human_local, pbcr = pbcr_human_local, original_align = human_original_align, align = 'local')
-human_global <- merge_all_species_corrected_data(lordec = lordec_human_global, proovread = proovread_human_global, lsc = lsc_human_global, original_align = human_original_align, align = 'global')
+human_local <- merge_all_species_corrected_data(lordec = lordec_human_local, proovread = proovread_human_local, pbcr = pbcr_human_local, halc = halc_human_local, original_align = human_original_align, align = 'local')
+human_global <- merge_all_species_corrected_data(lordec = lordec_human_global, proovread = proovread_human_global, lsc = lsc_human_global, halc = halc_human_global, original_align = human_original_align, align = 'global')
 
 
 # create data frame for locally clipped data
